@@ -1,0 +1,138 @@
+{
+  "openapi": "3.0.2",
+  "components": {
+    "schemas": {
+      "PublicError": {
+        "type": "object",
+        "properties": {
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "extra_parameters": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "invalid_parameters": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Problem"
+            }
+          },
+          "missing_parameters": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "Problem": {
+        "type": "object",
+        "properties": {
+          "parameter_name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "info": {
+    "title": "OpenAPI Test Server",
+    "version": "0.0.1"
+  },
+  "paths": {
+    "/body/multipart": {
+      "post": {
+        "tags": [
+          "body"
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "a_string": {
+                    "type": "string"
+                  },
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "For the sake of this test, include a file name and content type. The payload should also be valid UTF-8."
+                  },
+                  "description": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "a_string",
+                  "file"
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "a_string": {
+                      "type": "string",
+                      "description": "Echo of the 'a_string' input parameter from the form."
+                    },
+                    "file_data": {
+                      "type": "string",
+                      "description": "Echo of content of the 'file' input parameter from the form."
+                    },
+                    "description": {
+                      "type": "string",
+                      "description": "Echo of the 'description' input parameter from the form."
+                    },
+                    "file_name": {
+                      "type": "string",
+                      "description": "The name of the file uploaded."
+                    },
+                    "file_content_type": {
+                      "type": "string",
+                      "description": "The content type of the file uploaded."
+                    }
+                  },
+                  "required": [
+                    "a_string",
+                    "description",
+                    "file_data",
+                    "file_name",
+                    "file_content_type"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicError"
+                }
+              }
+            },
+            "description": "Bad Request"
+          }
+        }
+      }
+    }
+  }
+}
