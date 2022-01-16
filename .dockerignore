@@ -4,3 +4,4 @@ deny.toml
 dobby.toml
 Dockerfile
 Makefile.toml
+renovate.json
