@@ -19,7 +19,7 @@ COPY . .
 COPY --from=cacher /app/target target
 RUN cargo build --release
 
-FROM rust as runtime
+FROM debian:stable-slim as runtime
 WORKDIR app
 COPY --from=builder /app/target/release/openapi-test-server openapi-test-server
 ENTRYPOINT ["./openapi-test-server"]
