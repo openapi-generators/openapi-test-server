@@ -2,6 +2,9 @@ on:
   push:
     branches:
       - main
+  release:
+    types:
+      - released
 
 env:
   IMAGE_NAME: "openapi-test-server"
