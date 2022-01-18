@@ -133,6 +133,94 @@
           }
         }
       }
+    },
+    "/parameters/header": {
+      "description": "Test the valid types to send in headers.",
+      "post": {
+        "tags": [
+          "parameters"
+        ],
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "type": "boolean"
+            },
+            "name": "Boolean-Header",
+            "in": "header"
+          },
+          {
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "name": "String-Header",
+            "in": "header"
+          },
+          {
+            "required": true,
+            "schema": {
+              "type": "number"
+            },
+            "name": "Number-Header",
+            "in": "header"
+          },
+          {
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "name": "Integer-Header",
+            "in": "header"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "boolean": {
+                      "type": "boolean",
+                      "description": "Echo of the 'Boolean-Header' input parameter from the header."
+                    },
+                    "string": {
+                      "type": "string",
+                      "description": "Echo of the 'String-Header' input parameter from the header."
+                    },
+                    "number": {
+                      "type": "number",
+                      "description": "Echo of the 'Number-Header' input parameter from the header."
+                    },
+                    "integer": {
+                      "type": "integer",
+                      "description": "Echo of the 'Integer-Header' input parameter from the header."
+                    }
+                  },
+                  "required": [
+                    "boolean",
+                    "string",
+                    "number",
+                    "integer"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicError"
+                }
+              }
+            },
+            "description": "Bad Request"
+          }
+        }
+      }
     }
   }
 }
