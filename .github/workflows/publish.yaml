@@ -5,6 +5,7 @@ on:
   release:
     types:
       - released
+      - prereleased
 
 env:
   IMAGE_NAME: "openapi-test-server"
