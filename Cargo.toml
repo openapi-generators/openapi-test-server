@@ -1,6 +1,6 @@
 [package]
 name = "openapi-test-server"
-version = "0.0.0"
+version = "0.0.1"
 edition = "2021"
 description = "A web server for testing OpenAPI clients."
 authors = ["Dylan Anthony <contact@dylananthony.com>"]

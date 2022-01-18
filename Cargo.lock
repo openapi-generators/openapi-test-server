@@ -396,7 +396,7 @@ checksum = "da32515d9f6e6e489d7bc9d84c71b060db7247dc035bbe44eac88cf87486d8d5"
 
 [[package]]
 name = "openapi-test-server"
-version = "0.0.0"
+version = "0.0.1"
 dependencies = [
  "axum",
  "futures",
