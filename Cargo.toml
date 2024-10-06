@@ -8,7 +8,7 @@ license = "Apache-2.0"
 
 [dependencies]
 axum = { version = "0.4.3", features = ["json", "multipart"] }
-futures = "0.3.19"
+futures = "0.3.30"
 serde = { version = "1.0.133", features = ["derive"] }
 tokio = { version = "1.15.0", features = ["macros", "rt-multi-thread"] }
 tracing = "0.1.29"
