@@ -7,7 +7,7 @@ authors = ["Dylan Anthony <contact@dylananthony.com>"]
 license = "Apache-2.0"
 
 [dependencies]
-axum = { version = "0.4.3", features = ["json", "multipart"] }
+axum = { version = "0.8.0", features = ["json", "multipart"] }
 futures = "0.3.19"
 serde = { version = "1.0.133", features = ["derive"] }
 tokio = { version = "1.15.0", features = ["macros", "rt-multi-thread"] }
