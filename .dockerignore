@@ -2,7 +2,6 @@
 target/
 .gitignore
 deny.toml
-dobby.toml
+knope.toml
 Dockerfile
-Makefile.toml
-renovate.json
+Justfile

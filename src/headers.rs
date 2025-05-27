@@ -1,5 +1,4 @@
-use axum::http::HeaderMap;
-use axum::Json;
+use actix_web::{HttpRequest, HttpResponse, Responder};
 use serde::Serialize;
 
 use crate::PublicError;
@@ -9,15 +8,16 @@ const INTEGER_HEADER_NAME: &str = "Integer-Header";
 const NUMBER_HEADER_NAME: &str = "Number-Header";
 const BOOLEAN_HEADER_NAME: &str = "Boolean-Header";
 
-pub(crate) async fn main(mut headers: HeaderMap) -> Result<Json<Data>, PublicError> {
-    let string = match headers.remove(STRING_HEADER_NAME) {
+pub(crate) async fn main(req: HttpRequest) -> Result<impl Responder, PublicError> {
+    let headers = req.headers();
+    let string = match headers.get(STRING_HEADER_NAME) {
         Some(value) => value
             .to_str()
             .map_err(|_| PublicError::invalid(STRING_HEADER_NAME, "Not a valid string"))?
             .to_string(),
         None => return Err(PublicError::missing(STRING_HEADER_NAME)),
     };
-    let integer = match headers.remove(INTEGER_HEADER_NAME) {
+    let integer = match headers.get(INTEGER_HEADER_NAME) {
         Some(value) => {
             let str_value = value.to_str().map_err(|_| {
                 PublicError::invalid(
@@ -31,7 +31,7 @@ pub(crate) async fn main(mut headers: HeaderMap) -> Result<Json<Data>, PublicErr
         }
         None => return Err(PublicError::missing(INTEGER_HEADER_NAME)),
     };
-    let number = match headers.remove(NUMBER_HEADER_NAME) {
+    let number = match headers.get(NUMBER_HEADER_NAME) {
         Some(value) => {
             let str_value = value.to_str().map_err(|_| {
                 PublicError::invalid(
@@ -45,7 +45,7 @@ pub(crate) async fn main(mut headers: HeaderMap) -> Result<Json<Data>, PublicErr
         }
         None => return Err(PublicError::missing(NUMBER_HEADER_NAME)),
     };
-    let boolean = match headers.remove(BOOLEAN_HEADER_NAME) {
+    let boolean = match headers.get(BOOLEAN_HEADER_NAME) {
         Some(value) => {
             let str_value = value.to_str().map_err(|_| {
                 PublicError::invalid(BOOLEAN_HEADER_NAME, "Header must be a string")
@@ -57,14 +57,14 @@ pub(crate) async fn main(mut headers: HeaderMap) -> Result<Json<Data>, PublicErr
                     return Err(PublicError::invalid(
                         BOOLEAN_HEADER_NAME,
                         "Value must either be 'true' or 'false'",
-                    ))
+                    ));
                 }
             }
         }
         None => return Err(PublicError::missing(BOOLEAN_HEADER_NAME)),
     };
 
-    Ok(Json(Data {
+    Ok(HttpResponse::Ok().json(Data {
         string,
         integer,
         number,

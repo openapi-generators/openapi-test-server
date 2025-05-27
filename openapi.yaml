@@ -1,0 +1,139 @@
+openapi: "3.1.0"
+components:
+  schemas:
+    PublicError:
+      type: "object"
+      properties:
+        errors:
+          type: "array"
+          items:
+            type: "string"
+        extra_parameters:
+          type: "array"
+          items:
+            "type": "string"
+        invalid_parameters:
+          type: "array"
+          items:
+            "$ref": "#/components/schemas/Problem"
+        missing_parameters:
+          type: "array"
+          items:
+            "type": "string"
+    Problem:
+      type: "object"
+      properties:
+        parameter_name:
+          type: "string"
+        description:
+          type: "string"
+info:
+  title: "OpenAPI Test Server"
+  version: "0.1.0"
+paths:
+  "/body/multipart":
+    "post":
+      "tags": ["body"]
+      "requestBody":
+        "content":
+          "multipart/form-data":
+            "schema":
+              "type": "object"
+              required: ["a_string", "files", "description"]
+              "properties":
+                "a_string":
+                  "type": "string"
+                "files":
+                  type: "array"
+                  items:
+                    "type": "string"
+                    "format": "binary"
+                    "description": "For the sake of this test, include a file name and content type. The payload should also be valid UTF-8."
+                "description":
+                  "type": "string"
+      "responses":
+        "200":
+          "description": "OK"
+          "content":
+            "application/json":
+              "schema":
+                "type": "object"
+                "properties":
+                  "a_string":
+                    "type": "string"
+                    "description": "Echo of the 'a_string' input parameter from the form."
+                  "description":
+                    "type": "string"
+                    "description": "Echo of the 'description' input parameter from the form."
+                  "files":
+                    type: "array"
+                    items:
+                      type: "object"
+                      properties:
+                        "data":
+                          "type": "string"
+                          "description": "Echo of content of the 'file' input parameter from the form."
+                        "name":
+                          "type": "string"
+                          "description": "The name of the file uploaded."
+                        "content_type":
+                          "type": "string"
+                          "description": "The content type of the file uploaded."
+                required:
+                  - a_string
+                  - description
+        "400":
+          "content":
+            "application/json":
+              "schema":
+                "$ref": "#/components/schemas/PublicError"
+          "description": "Bad Request"
+  "/parameters/header":
+    "description": "Test the valid types to send in headers."
+    "post":
+      "tags": [
+        "parameters"
+      ]
+      "parameters":
+        - "schema":
+            "type": "boolean"
+          "name": "Boolean-Header"
+          "in": "header"
+        - "schema":
+            "type": "string"
+          "name": "String-Header"
+          "in": "header"
+        - "schema":
+            "type": "number"
+          "name": "Number-Header"
+          "in": "header"
+        - "schema":
+            "type": "integer"
+          "name": "Integer-Header"
+          "in": "header"
+      "responses":
+        "200":
+          "description": "OK"
+          "content":
+            "application/json":
+              "schema":
+                "type": "object"
+                "properties":
+                  "boolean":
+                    "type": "boolean"
+                    "description": "Echo of the 'Boolean-Header' input parameter from the header."
+                  "string":
+                    "type": "string"
+                    "description": "Echo of the 'String-Header' input parameter from the header."
+                  "number":
+                    "type": "number"
+                    "description": "Echo of the 'Number-Header' input parameter from the header."
+                  "integer":
+                    "type": "integer"
+                    "description": "Echo of the 'Integer-Header' input parameter from the header."
+        "400":
+          "content":
+            "application/json":
+              "schema":
+                "$ref": "#/components/schemas/PublicError"
+          "description": "Bad Request"

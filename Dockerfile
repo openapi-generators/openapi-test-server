@@ -1,25 +1,18 @@
-FROM rust as planner
+FROM lukemathwalker/cargo-chef:latest-rust-1.87 AS chef
 WORKDIR app
-# We only pay the installation cost once,
-# it will be cached from the second build onwards
-RUN cargo install cargo-chef
-COPY . .
-RUN cargo chef prepare  --recipe-path recipe.json
 
-FROM rust as cacher
-WORKDIR app
-RUN cargo install cargo-chef
+FROM chef AS planner
+COPY . .
+RUN cargo chef prepare --recipe-path recipe.json
+
+FROM chef AS builder
+ARG BIN
 COPY --from=planner /app/recipe.json recipe.json
 RUN cargo chef cook --release --recipe-path recipe.json
-
-FROM rust as builder
-WORKDIR app
 COPY . .
-# Copy over the cached dependencies
-COPY --from=cacher /app/target target
-RUN cargo build --release
+RUN cargo build --release --bin $BIN
 
-FROM debian:stable-slim as runtime
-WORKDIR app
-COPY --from=builder /app/target/release/openapi-test-server openapi-test-server
-ENTRYPOINT ["./openapi-test-server"]
+FROM gcr.io/distroless/cc-debian12 AS runtime
+ARG BIN
+COPY --from=builder /app/target/release/$BIN /app
+CMD ["./app"]

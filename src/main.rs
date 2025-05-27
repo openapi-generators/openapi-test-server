@@ -1,36 +1,28 @@
-#![deny(clippy::all)]
-#![deny(clippy::pedantic)]
-#![forbid(unsafe_code)]
-#![allow(clippy::unused_async)]
+use std::fmt::{Display, Formatter};
 
-use std::net::SocketAddr;
-
-use axum::response::{IntoResponse, Response};
-use axum::routing::{get, post};
-use axum::{http::StatusCode, Json, Router};
+use actix_web::{App, HttpResponse, HttpServer, ResponseError, web};
 use serde::Serialize;
 
 mod headers;
 mod multipart;
 
-#[tokio::main]
-async fn main() {
+#[actix_web::main]
+async fn main() -> std::io::Result<()> {
     tracing_subscriber::fmt::init();
 
-    let app = Router::new()
-        .route("/body/multipart", post(multipart::upload))
-        .route("/parameters/header", post(headers::main))
-        .route("/openapi.json", get(openapi));
-    let addr = SocketAddr::from(([0, 0, 0, 0], 3000));
-    tracing::debug!("listening on {}", addr);
-    axum::Server::bind(&addr)
-        .serve(app.into_make_service())
-        .await
-        .unwrap();
+    HttpServer::new(|| {
+        App::new()
+            .route("/body/multipart", web::post().to(multipart::upload))
+            .route("/parameters/header", web::post().to(headers::main))
+            .route("/openapi.yaml", web::get().to(openapi))
+    })
+    .bind(("0.0.0.0", 3000))?
+    .run()
+    .await
 }
 
 async fn openapi() -> &'static str {
-    include_str!("../openapi.json")
+    include_str!("../openapi.yaml")
 }
 
 #[derive(Debug, Default, Serialize)]
@@ -72,8 +64,14 @@ impl Problem {
     }
 }
 
-impl IntoResponse for PublicError {
-    fn into_response(self) -> Response {
-        (StatusCode::BAD_REQUEST, Json(self)).into_response()
+impl Display for PublicError {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "Error")
+    }
+}
+
+impl ResponseError for PublicError {
+    fn error_response(&self) -> HttpResponse {
+        HttpResponse::BadRequest().json(self)
     }
 }
