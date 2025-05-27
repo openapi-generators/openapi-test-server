@@ -82,6 +82,7 @@ paths:
                 required:
                   - a_string
                   - description
+                  - files
         "400":
           "content":
             "application/json":
