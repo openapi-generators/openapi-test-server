@@ -94,28 +94,27 @@ paths:
       "tags": [
         "parameters"
       ]
-      required:
-        - "Boolean-Header"
-        - "String-Header"
-        - "Number-Header"
-        - "Integer-Header"
       "parameters":
         - "schema":
             "type": "boolean"
           "name": "Boolean-Header"
           "in": "header"
+          required: true
         - "schema":
             "type": "string"
           "name": "String-Header"
           "in": "header"
+          required: true
         - "schema":
             "type": "number"
           "name": "Number-Header"
           "in": "header"
+          required: true
         - "schema":
             "type": "integer"
           "name": "Integer-Header"
           "in": "header"
+          required: true
       "responses":
         "200":
           "description": "OK"
