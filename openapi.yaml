@@ -94,6 +94,11 @@ paths:
       "tags": [
         "parameters"
       ]
+      required:
+        - "Boolean-Header"
+        - "String-Header"
+        - "Number-Header"
+        - "Integer-Header"
       "parameters":
         - "schema":
             "type": "boolean"
@@ -118,6 +123,11 @@ paths:
             "application/json":
               "schema":
                 "type": "object"
+                required:
+                  - "boolean"
+                  - "string"
+                  - "number"
+                  - "integer"
                 "properties":
                   "boolean":
                     "type": "boolean"
