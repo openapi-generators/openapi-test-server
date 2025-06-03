@@ -10,6 +10,7 @@ license = "Apache-2.0"
 actix-multipart = "0.7.2"
 actix-web = { version = "4.11.0", default-features = false, features = ["macros"] }
 serde = { version = "1.0.192", features = ["derive"] }
+time = {version = "0.3.41", features = ["serde-human-readable"]}
 tracing = "0.1.40"
 tracing-subscriber = "0.3.18"
 

@@ -1,6 +1,26 @@
 openapi: "3.1.0"
 components:
   schemas:
+    AnObject:
+      type: "object"
+      properties:
+        an_int:
+          type: integer
+        a_float:
+          type: number
+      required: [an_int, a_float]
+    File:
+      type: "object"
+      properties:
+        "data":
+          "type": "string"
+          "description": "Echo of content of the 'file' input parameter from the form."
+        "name":
+          "type": "string"
+          "description": "The name of the file uploaded."
+        "content_type":
+          "type": "string"
+          "description": "The content type of the file uploaded."
     PublicError:
       type: "object"
       properties:
@@ -29,7 +49,7 @@ components:
           type: "string"
 info:
   title: "OpenAPI Test Server"
-  version: "0.1.0"
+  version: "0.2.1"
 paths:
   "/body/multipart":
     "post":
@@ -39,7 +59,7 @@ paths:
           "multipart/form-data":
             "schema":
               "type": "object"
-              required: ["a_string", "files", "description"]
+              required: ["a_string", "files", "description", "times", "objects"]
               "properties":
                 "a_string":
                   "type": "string"
@@ -51,6 +71,15 @@ paths:
                     "description": "For the sake of this test, include a file name and content type. The payload should also be valid UTF-8."
                 "description":
                   "type": "string"
+                objects:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/AnObject"
+                times:
+                  type: array
+                  items:
+                    type: string
+                    format: date-time
       "responses":
         "200":
           "description": "OK"
@@ -68,21 +97,22 @@ paths:
                   "files":
                     type: "array"
                     items:
-                      type: "object"
-                      properties:
-                        "data":
-                          "type": "string"
-                          "description": "Echo of content of the 'file' input parameter from the form."
-                        "name":
-                          "type": "string"
-                          "description": "The name of the file uploaded."
-                        "content_type":
-                          "type": "string"
-                          "description": "The content type of the file uploaded."
+                      $ref: '#/components/schemas/File'
+                  times:
+                    type: array
+                    items:
+                      type: string
+                      format: date-time
+                  objects:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/AnObject"
                 required:
                   - a_string
                   - description
                   - files
+                  - times
+                  - objects
         "400":
           "content":
             "application/json":

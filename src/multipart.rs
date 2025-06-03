@@ -1,8 +1,9 @@
 use std::io::Read;
 
-use actix_multipart::form::{MultipartForm, tempfile::TempFile, text::Text};
+use actix_multipart::form::{MultipartForm, tempfile::TempFile, text::Text, json::Json};
 use actix_web::{HttpResponse, Responder};
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
+use time::OffsetDateTime;
 use tracing::log::debug;
 
 use crate::PublicError;
@@ -32,6 +33,8 @@ pub(crate) async fn upload(
     Ok(HttpResponse::Ok().json(Response {
         a_string: body.a_string.into_inner(),
         description: body.description.map(Text::into_inner),
+        times: body.times.into_iter().map(Text::into_inner).collect(),
+        objects: body.objects.into_iter().map(Json::into_inner).collect(),
         files,
     }))
 }
@@ -40,13 +43,27 @@ pub(crate) async fn upload(
 pub(crate) struct Data {
     a_string: Text<String>,
     description: Option<Text<String>>,
+    times: Vec<Text<DateTime>>,
+    objects: Vec<Json<AnObject>>,
     files: Vec<TempFile>,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+#[serde(transparent)]
+struct DateTime(#[serde(with = "time::serde::rfc3339")] OffsetDateTime);
+
+#[derive(Debug, Deserialize, Serialize)]
+struct AnObject {
+    an_int: u64,
+    a_float: f64,
 }
 
 #[derive(Debug, Serialize)]
 pub(crate) struct Response {
     a_string: String,
     description: Option<String>,
+    times: Vec<DateTime>,
+    objects: Vec<AnObject>,
     files: Vec<File>,
 }
 
