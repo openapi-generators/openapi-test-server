@@ -1,3 +1,12 @@
+## 0.2.2 (2026-01-24)
+
+### Fixes
+
+- update rust crate tracing-subscriber to v0.3.20 (#22)
+- update rust crate time to v0.3.43 (#24)
+- update rust crate time to v0.3.44 (#27)
+- update rust crate serde to v1.0.226 (#25)
+
 ## 0.2.1 (2025-06-03)
 
 ### Features
